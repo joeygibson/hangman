@@ -1,6 +1,6 @@
 module Main where
 
-import Control.Monad (forever)
+import Control.Monad (forever, when)
 import Data.Char (toLower)
 import Data.List (intersperse)
 import Data.Maybe (isJust)
@@ -97,20 +97,16 @@ handleGuess puzzle guess = do
 
 gameOver :: Puzzle -> IO ()
 gameOver (Puzzle wordToGuess _ guessed incorrectGuesses) =
-  if incorrectGuesses > 7
-    then do
-      putStrLn "You lose!"
-      putStrLn $ "The word was: " ++ wordToGuess
-      exitSuccess
-    else return ()
+  when (incorrectGuesses > 7)
+    $ do putStrLn "You lose!"
+         putStrLn $ "The word was: " ++ wordToGuess
+         exitSuccess
 
 gameWin :: Puzzle -> IO ()
 gameWin (Puzzle _ filledInSoFar _ _) =
-  if all isJust filledInSoFar
-    then do
-      putStrLn "You win!"
-      exitSuccess
-    else return ()
+  when (all isJust filledInSoFar)
+    $ do putStrLn "You win!"
+         exitSuccess
 
 runGame :: Puzzle -> IO ()
 runGame puzzle = forever $ do
